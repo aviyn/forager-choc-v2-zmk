@@ -24,7 +24,7 @@ When coming from the dongle firmware, flash `settings_reset` to both halves firs
 
 The battery gauge fills from the outer LED, nearest the XIAO, on both halves. On the right half the chain runs the other way, so its overlay reverses the order.
 
-- **Outer LED:** layer colour, left half only. Lower is blue, Raise cyan, Adjust red, Num orange, Nav green; set in `layer-colors` in `forager.dtsi`.
+- **Outer LED:** layer colour, left half only. It's lit while a layer key is held; a toggled layer (Num) only flashes for 1 s. Lower is blue, Raise cyan, Adjust red, Num orange, Nav green; set in `layer-colors` in `forager.dtsi`.
 - **Inner LED:** caps lock, white, on both halves; caps word, magenta, left half.
 - **While charging:** the battery gauge breathes the whole time.
 - **On battery:** the gauge shows each time it drops a step.
