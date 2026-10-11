@@ -137,5 +137,8 @@
         led-strip = <&status_led_strip>;
         /* BQ25101 CHG, open drain, low while charging */
         charge-gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        /* outer LED, left half only: Base off, Lower blue, Raise cyan,
+         * Adjust red, Num orange, Nav green. Caps lock / caps word: inner LED. */
+        layer-colors = <0 0x0000ff 0x00ffff 0xff0000 0xff8000 0x00ff00>;
     };
 };
