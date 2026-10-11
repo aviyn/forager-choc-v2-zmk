@@ -22,3 +22,8 @@
       ;
    };
 };
+/* LED1 (first in the chain) is the outer one, nearest the XIAO */
+&status_leds {
+   enable-gpios = <&gpio1 15 GPIO_ACTIVE_LOW>; /* D10, P-FET gate */
+   led-order = <0 1 2>;
+};

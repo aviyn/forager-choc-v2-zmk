@@ -26,3 +26,9 @@
         ;
     };
 };
+
+/* the chain runs inner to outer here, so reverse it to fill from the XIAO side */
+&status_leds {
+    enable-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>; /* D6, P-FET gate */
+    led-order = <2 1 0>;
+};

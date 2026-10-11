@@ -1,5 +1,6 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <physical_layouts.dtsi>
+#include <dt-bindings/led/led.h>
 
 / {
     chosen {
@@ -72,4 +73,69 @@
 
 &xiao_serial {
     status = "disabled";
+};
+
+/*
+ * The Zephyr 4.1 XIAO board enables these, and their pins are used here:
+ * i2c1 takes P0.04 (column) and P0.05 (LED data), spi2 takes P1.13-P1.15
+ * (matrix, left LED enable), pwm0 takes P0.17 (charger status).
+ */
+&xiao_i2c {
+    status = "disabled";
+};
+
+&xiao_spi {
+    status = "disabled";
+};
+
+&pwm0 {
+    status = "disabled";
+};
+
+/*
+ * Status LEDs: 3 x SK6812MINI-E on the top edge, data on P0.05 through
+ * 330R, supply switched by a P-FET from 3V3. The per-half overlays set
+ * the enable pin and the LED order.
+ */
+&pinctrl {
+    status_led_spi_default: status_led_spi_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 5)>;
+        };
+    };
+
+    status_led_spi_sleep: status_led_spi_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 5)>;
+            low-power-enable;
+        };
+    };
+};
+
+&spi3 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+    pinctrl-0 = <&status_led_spi_default>;
+    pinctrl-1 = <&status_led_spi_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    status_led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-spi";
+        reg = <0>;
+        spi-max-frequency = <4000000>;
+        chain-length = <3>;
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+        reset-delay = <80>; /* SK6812 latch, the 8 us default is for WS2812 */
+        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+    };
+};
+
+/ {
+    status_leds: status_leds {
+        compatible = "zmk,ledstrip-status";
+        led-strip = <&status_led_strip>;
+        /* BQ25101 CHG, open drain, low while charging */
+        charge-gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
 };
